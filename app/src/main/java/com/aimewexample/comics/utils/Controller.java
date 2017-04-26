@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.aimewexample.comics.events.SuccessGetCharacter;
 import com.aimewexample.comics.events.SuccessGetComics;
+import com.aimewexample.comics.events.SuccessGetDetails;
 import com.aimewexample.comics.models.Characters;
 import com.aimewexample.comics.models.Comics;
 import com.android.volley.DefaultRetryPolicy;
@@ -75,6 +76,50 @@ public class Controller {
     }
 
     public void getComics(String character, final int position) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url+character, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    //Log.i("RESPONSE: ", response.toString());
+                    JSONObject jsonObjectData = response.getJSONObject("data");
+                    JSONArray jsonArrayResults = jsonObjectData.getJSONArray("results");
+                    JSONObject jsonObjectCharacter = jsonArrayResults.getJSONObject(position);
+
+                    //obtener la imagen
+                    JSONObject jsonObjectImage = jsonObjectCharacter.getJSONObject("thumbnail");
+                    String path = jsonObjectImage.getString("path");
+                    String extension = jsonObjectImage.getString("extension");
+                    String image = path + "." + extension;
+
+                    //obtener el nombre
+                    String name = jsonObjectCharacter.getString("name");
+
+                    //obtener la descripcion
+                    String description = jsonObjectCharacter.getString("description");
+
+                    //crear el objeto character
+                    Characters character = new Characters(name, image, description);
+
+
+                    App.getBus().post(new SuccessGetDetails(character));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.i("Error Response", e.toString());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("Error Response", error.toString());
+            }
+        });
+        //request
+        jsonObjectRequest.setRetryPolicy(policy);
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public void getDetails(String character, final int position) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url+character, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

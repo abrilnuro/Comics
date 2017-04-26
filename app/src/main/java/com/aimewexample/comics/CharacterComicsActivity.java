@@ -24,6 +24,7 @@ public class CharacterComicsActivity extends AppCompatActivity implements Charac
     private CharacterRecyclerAdapter adapter;
     private LinearLayoutManager llm;
     private String character;
+    private int search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class CharacterComicsActivity extends AppCompatActivity implements Charac
 
         //cachar intent
         character = getIntent().getStringExtra("character");
+        search = getIntent().getIntExtra("search", 0);
 
         //hacer solicitud
         Controller controller = new Controller(this);
@@ -51,9 +53,16 @@ public class CharacterComicsActivity extends AppCompatActivity implements Charac
 
     @Override
     public void onItemSelected(int position) {
-        Intent intent = new Intent(CharacterComicsActivity.this, ComicsActivity.class);
-        intent.putExtra("position", position);
-        intent.putExtra("character", character);
-        startActivity(intent);
+        if(search == 1) {
+            Intent intent = new Intent(CharacterComicsActivity.this, CharacterDetailsActivity.class);
+            intent.putExtra("position", position);
+            intent.putExtra("character", character);
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(CharacterComicsActivity.this, ComicsActivity.class);
+            intent.putExtra("position", position);
+            intent.putExtra("character", character);
+            startActivity(intent);
+        }
     }
 }

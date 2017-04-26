@@ -14,7 +14,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     private ActivitySearchBinding binding;
     private int search;
-    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                    binding.editSearch.setError("Ingresa un personaje");
                    binding.editSearch.requestFocus();
                } else{
-                   if (search == 1) {
+                   Intent intent = new Intent(SearchActivity.this, CharacterComicsActivity.class);
+                   intent.putExtra("character", character);
+                   intent.putExtra("search", search);
+                   startActivity(intent);
+                   /*if (search == 1) {
                        intent = new Intent(SearchActivity.this, CharacterDetailsActivity.class);
                        intent.putExtra("character", character);
                        startActivity(intent);
@@ -47,7 +50,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                        intent = new Intent(SearchActivity.this, CharacterComicsActivity.class);
                        intent.putExtra("character", character);
                        startActivity(intent);
-                   }
+                   }*/
                }
                break;
        }
